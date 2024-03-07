@@ -1,0 +1,8 @@
+{
+  "short_name": "Bake Mate",
+  "name": "Bake Mate App",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

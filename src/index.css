@@ -1,1 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap');
 
+:root {
+    --primary-color: #3B5BA5;
+    --secondary-color: #FFFFFF;
+    /* --secondary-color: #E87A5D;
+    --tertiary-color: #F3B941; */
+}
+
+* {
+    font-family: "Domine", serif;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+header {
+    text-align: center;
+}
+
+h1, h2 {
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-weight: 800;
+    font-size: 5rem;
+}
+
+.tool {
+    margin-left: 2em;
+    padding: 1em;
+}

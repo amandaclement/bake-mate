@@ -1,9 +1,12 @@
-import './App.css';
+import Header from './components/Header.jsx';
+import PanSizer from './components/PanSizer.jsx';
 
 function App() {
   return (
-    <div>
-    </div>
+    <>
+      <Header />
+      <PanSizer />
+    </>
   );
 }
 

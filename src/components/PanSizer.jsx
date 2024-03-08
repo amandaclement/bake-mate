@@ -4,31 +4,36 @@ import { useState } from 'react';
 const pans = {
     rectangular: [
         { length: 8, width: 8, height: 2 },
-        { length: 9, width: 9, height: 2 },
+        { length: 9, width: 9, height: 2  },
         { length: 10, width: 10, height: 2 },
         { length: 11, width: 7, height: 2 },
         { length: 13, width: 9, height: 2 }
     ],
     round: [
         { diameter: 6, height: 2 },
+        { diameter: 8, height: 2 },
         { diameter: 9, height: 2 },
-        { diameter: 9, height: 2 }
+        { diameter: 10, height: 2 }
     ],
     springform: [
-        { diameter: 9, height: 2.5 },
-        { diameter: 10, height: 2.5 }
+        { diameter: 8, height: 3 },
+        { diameter: 9, height: 3 }
     ],
     bundt: [
+        { diameter: 8, height: 4 },
         { diameter: 10, height: 3 }
     ],
     tube: [
+        { diameter: 8, height: 3 },
         { diameter: 9, height: 3 }
     ],
     loaf: [
-        { length: 8, width: 4, height: 3 },
-        { length: 9, width: 5, height: 3 }
+        { length: 8, width: 4, height: 2.5 },
+        { length: 9, width: 5, height: 2.5 }
     ],
 };
+
+const maxVolumeDifference = 0.1;
 
 // Generates dimension options for specific pan type
 function dimensionOptions(type) {
@@ -42,6 +47,67 @@ function dimensionOptions(type) {
             value: { diameter, height },
             label: `${diameter} x ${height}`
         }));
+    }
+}
+
+// Converts cubic inches to litres
+function cubicInchesToLitres(x) {
+    return x * 0.0163871;
+}
+
+// Calculates volume of a cylinder without unit conversion
+function cylinderVolume(diameter, height) {
+    return (diameter/2) * (diameter/2) * height * Math.PI;
+}
+
+// Calculates volume of a cuboid with unit conversion
+function calculateCuboidVolume({ length, width, height }) {
+    return cubicInchesToLitres(length * width * height);
+}
+
+// Calculates volume of a cylinder with unit conversion
+function calculateCylinderVolume({ diameter, height }) {
+    return cubicInchesToLitres(cylinderVolume(diameter, height));
+}
+
+// Calculates volume of a cylinder with a hole in the middle with unit conversion
+// Scaler is used in a very rudimentary way to account for loss of volume due to angled base of bundt cakes
+function calculateHollowCylinderVolume({ diameter, height }, scaler) {
+    const outerVolume = cylinderVolume(diameter, height);
+    const innerDiameter = diameter/10;
+    const innerVolume = cylinderVolume(innerDiameter, height);
+    return cubicInchesToLitres(outerVolume * scaler - innerVolume);
+}
+
+// Calculates volume of pan based on type and dimensions
+function calculateVolume(type, dimensions) {
+    if (type === 'rectangular' || type === 'loaf') {
+        return calculateCuboidVolume(dimensions); 
+    } else if (type === 'round' || type === 'springform') {
+        return calculateCylinderVolume(dimensions); 
+    } else if (type === 'tube') {
+        return calculateHollowCylinderVolume(dimensions, 1); 
+    } else if (type === 'bundt') {
+        return calculateHollowCylinderVolume(dimensions, 0.7); 
+    }
+}
+
+// Adds corresponding volume for each dimension set in pans
+function addVolumes() {
+    for (const type in pans) {
+        pans[type].forEach(dimensions => {
+            dimensions.volume = calculateVolume(type, dimensions);
+        });
+    }
+}
+addVolumes();
+
+// Generates dimension options for specific pan type
+function getDimensions(type, pan) {
+    if (type === 'rectangular' || type === 'loaf') {
+        return `${pan.length} x ${pan.width} x ${pan.height}`;
+    } else {
+        return `${pan.diameter} x ${pan.height}`;
     }
 }
 
@@ -75,8 +141,38 @@ export default function PanSizer() {
         setSelectedDimensionsIndex(event.target.value);
     }
 
-    // Get the selected dimension based on the selected index
-    const selectedDimension = dimensions[selectedDimensionsIndex];
+    // Returns an array of acceptable pan conversions, formatted as [pan type, pan dimension string]
+    function findMatches(shape, selectedVolume) {
+        var matches = [];
+        for (const type in pans) {
+            if (type !== shape) {
+                pans[type].forEach(pan => {
+                    if (Math.abs(pan.volume - selectedVolume) < maxVolumeDifference) {
+                        matches.push([type, getDimensions(type, pan)]);
+                    }
+                });
+            }
+        } 
+        return matches;  
+    }
+
+    // Renders the matches array in list form
+    function renderMatches(shape, selectedVolume) {
+        const matches = findMatches(shape, selectedVolume);
+        if (matches.length === 0) {
+            return <p>No substitutions found.</p>;
+        }
+        return (
+            <div>
+                <h3>Can be substituted with</h3>
+                <ul>
+                    {matches.map((item, index) => (
+                        <li key={index}>{item[0]}: {item[1]}</li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
 
     // Render the component
     return (
@@ -94,9 +190,9 @@ export default function PanSizer() {
                         <option value="rectangular">Rectangular</option>
                         <option value="round">Round</option>
                         <option value="springform">Springform</option>
-                        <option value="loaf">Loaf</option>
                         <option value="bundt">Bundt</option>
                         <option value="tube">Tube</option>
+                        <option value="loaf">Loaf</option>
                     </select>
                 </p>
 
@@ -118,13 +214,9 @@ export default function PanSizer() {
                     </select>
                 </p>
                 
-                <div>
-                    {/* Display selected shape and dimensions */}
-                    <p>{`Chosen shape: ${shape}`}</p>
-                    <p>Dimensions: </p>
-                    {(shape === 'rectangular' || shape === 'loaf') ?
-                    `Length: ${selectedDimension.value.length}, Width: ${selectedDimension.value.width}, Height: ${selectedDimension.value.height}` :
-                    `Diameter: ${selectedDimension.value.diameter}, Height: ${selectedDimension.value.height}` }
+                <div id="pan-matches">
+                    {/* Display matches, if any */}
+                    {renderMatches(shape, pans[shape][selectedDimensionsIndex].volume)}
                 </div>
             </form>
         </section>

@@ -33,3 +33,7 @@ h1 {
     margin-left: 2em;
     padding: 1em;
 }
+
+ul {
+    list-style-type: none;
+}

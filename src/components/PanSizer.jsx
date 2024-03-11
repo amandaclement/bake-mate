@@ -12,21 +12,21 @@ export default function PanSizer() {
     const [pans, setPans] = useState(defaultPans);
     const [shape, setShape] = useState('rectangular');
     const [dimensionsIndex, setDimensionsIndex] = useState(0);
-    const [isDisplayMatches, setIsDisplayMatches] = useState(false);
+    const [result, setResult] = useState('');
 
     // Handles shape change
     function handleShapeChange(event) {
         const type = event.target.value;
         setShape(type);
         setDimensionsIndex(0);
-        setIsDisplayMatches(false);
+        setResult('');
     }
 
     // Handles dimension change
     function handleDimensionChange(event) {
         const selectedIndex = event.target.value;
         setDimensionsIndex(selectedIndex);
-        setIsDisplayMatches(false);
+        setResult('');
     }
 
     // Handles custom dimension input entries
@@ -37,8 +37,7 @@ export default function PanSizer() {
         const updatedPans = { ...pans };
         updatedPans[shape][dimensionsIndex][name] = value;
         setPans(updatedPans);
-
-        setIsDisplayMatches(false);
+        setResult('');
     }
 
     // Handles submit button
@@ -53,7 +52,7 @@ export default function PanSizer() {
             updatedPans[shape][dimensionsIndex].volume = calculateVolume(shape, pans[shape][dimensionsIndex]);
             setPans(updatedPans);
         }
-        setIsDisplayMatches(true);
+        setResult(renderMatches());
     }
 
     // Returns an array of acceptable pan substitutes, formatted as type:label
@@ -127,7 +126,7 @@ export default function PanSizer() {
                     >  
 
                     {/* Map over dimension options to display in dropdown */}
-                    {pans[shape].map((option, index) => (
+                    {defaultPans[shape].map((option, index) => (
                         <option key={index} value={index}>
                             {option.label}
                         </option>
@@ -193,9 +192,7 @@ export default function PanSizer() {
                 <button onClick={handleResult}>Enter</button>
                 
                 {/* Renders a list of pan matches, if any */}
-                {isDisplayMatches && 
-                    <div>{renderMatches()}</div>
-                }
+                {result}
             </form>
         </section>
     );

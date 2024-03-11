@@ -33,22 +33,16 @@ const pans = {
     ],
 };
 
-const maxVolumeDifference = 0.1;
+// For resetting pan dimensions
+const emptyDimensions = {
+    length: '',
+    width: '',
+    height: '',
+    diameter: ''
+};
 
-// Generates dimension options for specific pan type
-function dimensionOptions(type) {
-    if (type === 'rectangular' || type === 'loaf') {
-        return pans[type].map(({ length, width, height }) => ({
-            value: { length, width, height },
-            label: `${length} x ${width} x ${height}`
-        }));
-    } else {
-        return pans[type].map(({ diameter, height }) => ({
-            value: { diameter, height },
-            label: `${diameter} x ${height}`
-        }));
-    }
-}
+const maxVolumeDifference = 0.1;
+const bundtScaler = 0.7;
 
 // Converts cubic inches to litres
 function cubicInchesToLitres(x) {
@@ -71,7 +65,7 @@ function calculateCylinderVolume({ diameter, height }) {
 }
 
 // Calculates volume of a cylinder with a hole in the middle with unit conversion
-// Scaler is used in a very rudimentary way to account for loss of volume due to angled base of bundt cakes
+// Scaler is used in a very rudimentary way to account for loss of volume due to angled base of certain pan types
 function calculateHollowCylinderVolume({ diameter, height }, scaler) {
     const outerVolume = cylinderVolume(diameter, height);
     const innerDiameter = diameter/10;
@@ -88,93 +82,115 @@ function calculateVolume(type, dimensions) {
     } else if (type === 'tube') {
         return calculateHollowCylinderVolume(dimensions, 1); 
     } else if (type === 'bundt') {
-        return calculateHollowCylinderVolume(dimensions, 0.7); 
+        return calculateHollowCylinderVolume(dimensions, bundtScaler); 
     }
 }
 
-// Adds corresponding volume for each dimension set in pans
-function addVolumes() {
+// Generates dimension options for specific pan type
+function generateLabel(type, dimensions) {
+    if (type === 'rectangular' || type === 'loaf') {
+        const { length, width, height } = dimensions;
+        return `${length} X ${width} X ${height}`;
+    } else {
+        const { diameter, height } = dimensions;
+        return `${diameter} X ${height}`;
+    }
+}
+
+// Updates each dimension with its corresponding volume and label
+function updateDimensions() {
     for (const type in pans) {
         pans[type].forEach(dimensions => {
             dimensions.volume = calculateVolume(type, dimensions);
+            dimensions.label = generateLabel(type, dimensions);
         });
     }
 }
-addVolumes();
-
-// Generates dimension options for specific pan type
-function getDimensions(type, pan) {
-    if (type === 'rectangular' || type === 'loaf') {
-        return `${pan.length} x ${pan.width} x ${pan.height}`;
-    } else {
-        return `${pan.diameter} x ${pan.height}`;
-    }
-}
+updateDimensions();
 
 // React component for Pan Sizer
 export default function PanSizer() {
 
-    // State variable for selected shape
+    // State variables
     const [shape, setShape] = useState('rectangular');
-
-    // State variable for dimensions of selected shape
-    const [dimensions, setDimensions] = useState(dimensionOptions('rectangular'));
-    
-    // State variable for index of selected dimensions
     const [selectedDimensionsIndex, setSelectedDimensionsIndex] = useState(0);
+    const [currentDimensions, setCurrentDimensions] = useState(pans['rectangular'][0]);
+    const [volume, setVolume] = useState(0);
+    const [isDisplayMatches, setIsDisplayMatches] = useState(false);
 
-    // Event handler for shape change
+    // Handles shape change
     function handleShapeChange(event) {
         const type = event.target.value;
         setShape(type);
-
-        // Update dimensions based on the selected shape
-        setDimensions(dimensionOptions(type));
-
-        // Reset selected dimension to the first one
         setSelectedDimensionsIndex(0);
+        setIsDisplayMatches(false);
     }
 
-    // Event handler for dimension change
+    // Handles dimension change
     function handleDimensionChange(event) {
-        // event.target.value represents the selected index
-        setSelectedDimensionsIndex(event.target.value);
+        const selectedIndex = event.target.value;
+        setSelectedDimensionsIndex(selectedIndex);
+
+        // If custom chosen, reset dimensions to null, else set them to appropriate shape/dimension combo
+        selectedIndex === 'custom' ? setCurrentDimensions(emptyDimensions) : setCurrentDimensions(pans[shape][selectedIndex]);
+        setIsDisplayMatches(false);
     }
 
-    // Returns an array of acceptable pan conversions, formatted as [pan type, pan dimension string]
-    function findMatches(shape, selectedVolume) {
+    // Handles custom dimension input entries
+    function handleCustomDimensionChange(event) {
+        const {name, value} = event.target;
+        setCurrentDimensions({
+            ...currentDimensions,
+            [name]: value
+          });
+    }
+
+    // Handles submit button
+    function handleResult(event) {
+        // Prevent page reload on button click
+        event.preventDefault(); 
+        setVolume(calculateVolume(shape, currentDimensions));
+        setIsDisplayMatches(true);
+    }
+
+    // Returns an array of acceptable pan substitutes, formatted as type:label
+    function findMatches() {
+        var currentLabel = generateLabel(shape, currentDimensions);
         var matches = [];
         for (const type in pans) {
-            if (type !== shape) {
-                pans[type].forEach(pan => {
-                    if (Math.abs(pan.volume - selectedVolume) < maxVolumeDifference) {
-                        matches.push([type, getDimensions(type, pan)]);
-                    }
-                });
-            }
+            pans[type].forEach(pan => {
+                // Check conditions for matching pans
+                const isDifferentLabel = pan.label !== currentLabel;
+                const isDifferentShape = shape !== type;
+                const isVolumeWithinRange = Math.abs(pan.volume - volume) < maxVolumeDifference;
+
+                if ((isDifferentLabel || !isDifferentLabel && isDifferentShape) && isVolumeWithinRange) {
+                    matches.push(`${type}: ${pan.label}`);
+                }
+            });
         } 
         return matches;  
     }
 
-    // Renders the matches array in list form
-    function renderMatches(shape, selectedVolume) {
-        const matches = findMatches(shape, selectedVolume);
+    // Returns the matches in list form
+    function renderMatches() {
+        const matches = findMatches();
         if (matches.length === 0) {
             return <p>No substitutions found.</p>;
         }
         return (
             <div>
-                <h3>Can be substituted with</h3>
+                <h3>Substitutions:</h3>
                 <ul>
-                    {matches.map((item, index) => (
-                        <li key={index}>{item[0]}: {item[1]}</li>
+                    {matches.map((match, index) => (
+                        <li key={index}>{match}</li>
                     ))}
                 </ul>
             </div>
         );
     }
 
-    // Render the component
+    // Renders the component
     return (
         <section className="tool">
             <h2 className="form-title">Pan Sizer</h2>
@@ -206,18 +222,76 @@ export default function PanSizer() {
                     >  
 
                     {/* Map over dimension options to display in dropdown */}
-                    {dimensions.map((option, index) => (
+                    {pans[shape].map((option, index) => (
                         <option key={index} value={index}>
                             {option.label}
                         </option>
                     ))}
+                    <option value="custom">Custom</option>
                     </select>
                 </p>
                 
-                <div id="pan-matches">
-                    {/* Display matches, if any */}
-                    {renderMatches(shape, pans[shape][selectedDimensionsIndex].volume)}
-                </div>
+                {/* Displays additional input boxes (based on chosen shape) only if user chooses to enter custom dimensions */}
+                {selectedDimensionsIndex === 'custom' && (shape === 'rectangular' || shape == 'loaf') && (
+                    <p>
+                        <input 
+                            type="number" 
+                            name="length" 
+                            placeholder="Length" 
+                            required 
+                            value={currentDimensions.length} 
+                            onChange={handleCustomDimensionChange} 
+                            className="dimension-input"
+                        /> X&nbsp;
+                        <input 
+                            type="number" 
+                            name="width" 
+                            placeholder="Width" 
+                            required 
+                            value={currentDimensions.width} 
+                            onChange={handleCustomDimensionChange} 
+                            className="dimension-input"
+                        /> X&nbsp;
+                        <input 
+                            type="number" 
+                            name="height" 
+                            placeholder="Height" 
+                            required 
+                            value={currentDimensions.height} 
+                            onChange={handleCustomDimensionChange} 
+                            className="dimension-input"
+                        />
+                    </p>
+                )}
+                {selectedDimensionsIndex === 'custom' && !(shape === 'rectangular' || shape == 'loaf') && (
+                    <p>
+                        <input 
+                            type="number" 
+                            name="diameter" 
+                            placeholder="Diameter" 
+                            required 
+                            value={currentDimensions.diameter} 
+                            onChange={handleCustomDimensionChange} 
+                            className="dimension-input"
+                        /> X&nbsp;
+                        <input 
+                            type="number" 
+                            name="height" 
+                            placeholder="Height" 
+                            required 
+                            value={currentDimensions.height} 
+                            onChange={handleCustomDimensionChange}
+                            className="dimension-input"
+                        />
+                    </p>
+                )}
+
+                <button onClick={handleResult}>Enter</button>
+                
+                {/* Renders a list of pan matches, if any */}
+                {isDisplayMatches && 
+                    <div>{renderMatches()}</div>
+                }
             </form>
         </section>
     );

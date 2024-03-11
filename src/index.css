@@ -29,11 +29,19 @@ h1 {
     font-size: 5rem;
 }
 
+h2 {
+    font-size: 2rem;
+}
+
 .tool {
     margin-left: 2em;
     padding: 1em;
 }
 
 ul {
-    list-style-type: none;
+    text-transform: capitalize;
+}
+
+input.dimension-input {
+    width: 5rem;
 }

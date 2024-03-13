@@ -31,14 +31,16 @@ export default function RecipeScaler() {
         // Prevent page reload on button click
         event.preventDefault();
 
-        // If both or either size values are missing, alert user
-        if (originalSize === '' || desiredSize === '') {
-            alert('Please enter both the original and desired serving sizes.');
+        // If both or either size values are missing or less than 1, alert user
+        if (originalSize <= 0 || desiredSize <= 0) {
+            alert('Please enter a value grater than 0 for both the original and desired serving sizes.');
             return;
         }
 
-        // Process the recipe, scaling measurements as needed
+        // Calculate scaler value
         const recipeScaler = desiredSize / originalSize;
+
+        // Process the recipe, scaling measurements as needed
         const modifiedRecipe = convertMeasurements(originalRecipe, recipeScaler);
 
         // Update result state variable
@@ -47,7 +49,7 @@ export default function RecipeScaler() {
 
     // React component for Recipe Scaler
     return (
-        <section className="tool">
+        <section id="recipe-scaler" className="tool">
             <h2 className="form-title">Recipe Scaler</h2>
             <p>Paste your recipe: </p>
             <form>

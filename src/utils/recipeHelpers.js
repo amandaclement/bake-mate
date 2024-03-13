@@ -1,37 +1,54 @@
-// Returns an array of the individual terms found in a string, separate by whitespace
+// Bool to track validity of recipe text lines
+var invalidLine = false;
+
+// Returns an array of the individual terms found in a string, separate by whitespace. Removes whitespace at beginning and end of string
 function getTerms(str) {
-    return str.split(/\s+/);
+    return str.trim().split(/\s+/);
 }
 
-// Returns true if a string represents a number
+// Returns true if str represents a number
 function isNumber(str) {
     return !isNaN(str);
 }
 
-// Returns true if a string represents a fraction (e.g. 1/2)
-function isFraction(str) {
-    // Regular expression to match format "number/number"
+// Returns true if str represents a fraction in Unicode form (e.g. ½)
+function isUnicodeFraction(str) {
+    const unicodeFractionRegex = /[\u00BC-\u00BE\u2150\u215B-\u215E]/;
+    return unicodeFractionRegex.test(str);
+}
+
+// Returns true if str represents a fraction in regular form (e.g. 1/2)
+function isRegularFraction(str) {
     const fractionRegex = /^\d+\/\d+$/;
     return fractionRegex.test(str);
 }
 
-// Returns true is a string represents a Unicode fraction (e.g. ½)
-function isUnicodeFraction(str) {
-    // Regular expression to match common Unicode fraction characters
-    const fractionRegex = /[\u00BC-\u00BE\u2150\u215B-\u215E]/;
-    return fractionRegex.test(str);
+// If str represents a decimal, return its corresponding scaled decimal number
+function processNumber(str) {
+    if (isNumber(str)) {
+        return Number(str);
+    }
+    return str;
 }
 
-// Converts a fraction to decimal form
-function fractionToDecimal(str) {
-    const [numerator, denominator] = str.split('/').map(Number);
-    return numerator/denominator;
-}
+// If str represents a fraction (regular or Unicode), return its corresponding scaled decimal number
+function processFraction(str) {
+    if (isUnicodeFraction(str)) {
+        // Accounts for mixed Unicode fractions not separated by whitespace (e.g. 1½)
+        // Whole number part of string (if any) is all but the last char
+        const whole = str.slice(0,-1);
 
-// Converts a Unicode fraction to decimal form
-function unicodeFractionToDecimal(fractionString) {
-    // Replace Unicode common fraction characters with their equivalent decimal representations
-    const normalizedFractionString = fractionString
+        // If this isn't a number, update flag and simply return str
+        if (!isNumber(whole)) {
+            invalidLine = true;
+            return str;
+        }
+
+        // Unicode fraction part of string is just the last char 
+        const fraction = str.slice(-1);
+
+        // Replace Unicode common fraction characters with their equivalent decimal representations
+        const convertedFraction = fraction
         .replace(/\u00BC/g, '1/4')  // ¼
         .replace(/\u00BD/g, '1/2')  // ½
         .replace(/\u00BE/g, '3/4')  // ¾
@@ -40,30 +57,51 @@ function unicodeFractionToDecimal(fractionString) {
         .replace(/\u215D/g, '5/8')  // ⅝
         .replace(/\u215E/g, '7/8'); // ⅞
 
-    return fractionToDecimal(normalizedFractionString);
+        // Convert fraction to decimal, add to whole, and return as a number
+        const decimalFraction = eval(convertedFraction);
+        return Number(whole) + Number(decimalFraction);
+
+    } else if (isRegularFraction(str)) {
+        // Convert fraction to decimal and return as a number
+        const decimalFraction = eval(str);
+        return Number(decimalFraction);
+    }
+    return str;
 }
 
 // Processes a single line, converting and scaling values as needed
-function processMeasurementLine(str, scaler) {
+function processLine(str, scaler) {
     const terms = getTerms(str);
+    const numTerms = terms.length;
     var processedLine = '';
 
-    terms.forEach(term => {
-        if (isFraction(term)) {
-            processedLine += fractionToDecimal(term) * scaler;
-        } else if (isUnicodeFraction(term)) {
-            processedLine += unicodeFractionToDecimal(term) * scaler;
-        } else if (isNumber(term)) {
-            processedLine += term * scaler;
-        } else {
-            processedLine += term;
+    for (var i = 0; i < numTerms; i++) {
+        invalidLine = false;
+        var term = processNumber(terms[i]);
+        term = processFraction(term); 
+
+        // If term is a number at this point, can safely scale it
+        if (isNumber(term)) {
+            term = term * scaler;
         }
-        processedLine += ' ';
-    });
+
+        // Accounts for mixed fractions separated by whitespace (e.g. 1 ½)
+        // If current term is a decimal number and next term is a fraction, sum them
+        if (isNumber(term) && i < numTerms-1 && (isUnicodeFraction(terms[i+1]) || isRegularFraction(terms[i+1]))) {
+            term += processFraction(terms[i+1]) * scaler;
+            i++;
+        } 
+        processedLine += term + ' ';
+
+        // Inform user if line is invalid
+        if (invalidLine) {
+            return 'Invalid line. Please ensure all words and numerical values are separated by a space.'
+        }
+    }
     return processedLine;
 }
 
-// Returns an entire recipe in list form, with measurements converted and scaled as needed
+// Returns the entire scaled recipe in list form
 export function convertMeasurements(str, scaler) {
     const measurementLines = str.split('\n');
 
@@ -72,7 +110,7 @@ export function convertMeasurements(str, scaler) {
             {measurementLines.map((line, index) => {
                 // Skip empty lines
                 if (line !== '') {
-                    return <li key={index}>{processMeasurementLine(line, scaler)}</li>;
+                    return <li key={index}>{processLine(line, scaler)}</li>;
                 }
                 return null;
             })}

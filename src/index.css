@@ -44,6 +44,10 @@ h2 {
     padding: 2rem 4rem;
 }
 
+input.number-input {
+    width: 2rem;
+}
+
 #pan-sizer ul {
     text-transform: capitalize;
 }

@@ -31,9 +31,9 @@ export default function RecipeScaler() {
         // Prevent page reload on button click
         event.preventDefault();
 
-        // If both or either size values are missing or less than 1, alert user
+        // If both or either size values are missing or not greater than 0, prompt user to correct
         if (originalSize <= 0 || desiredSize <= 0) {
-            alert('Please enter a value grater than 0 for both the original and desired serving sizes.');
+            alert('Please enter a value greater than 0 for both the original and desired serving sizes.');
             return;
         }
 
@@ -60,6 +60,7 @@ export default function RecipeScaler() {
                 <p>
                     <label>Original serving size: </label>
                     <input 
+                        className="number-input"
                         type="number" 
                         name="original-serving-size" 
                         required 
@@ -70,6 +71,7 @@ export default function RecipeScaler() {
                 <p>
                     <label>Desired serving size: </label>
                     <input 
+                        className="number-input"
                         type="number" 
                         name="desired-serving-size" 
                         required 

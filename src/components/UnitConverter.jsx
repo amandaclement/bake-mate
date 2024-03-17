@@ -56,6 +56,7 @@ export default function UnitConverter() {
         setResult(renderResult(conversion));
     }
     
+    // React component for Unit Converter
     return (
         <section id="unit-converter" className="tool">
             <h2 className="form-title">Unit Converter</h2>

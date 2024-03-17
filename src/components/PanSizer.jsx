@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { maxVolumeDifference, defaultPans } from '../utils/panData.js';
+import { maxVolumeDifference, defaultPans, panTypes } from '../utils/panData.js';
 import { calculateVolume, generateLabel, initializePanData } from '../utils/panHelpers.js';
 
 // Assign volume and label to each standard pan size
@@ -16,16 +16,14 @@ export default function PanSizer() {
 
     // Handles shape change
     function handleShapeChange(event) {
-        const type = event.target.value;
-        setShape(type);
+        setShape(event.target.value);
         setDimensionsIndex(0);
         setResult('');
     }
 
     // Handles dimension change
     function handleDimensionChange(event) {
-        const selectedIndex = event.target.value;
-        setDimensionsIndex(selectedIndex);
+        setDimensionsIndex(event.target.value);
         setResult('');
     }
 
@@ -76,7 +74,7 @@ export default function PanSizer() {
         return matches;  
     }
 
-    // Returns the matches in list form
+    // Returns the matches in list form, rendy to be rendered
     function renderMatches() {
         const matches = findMatches();
         if (matches.length === 0) {
@@ -107,12 +105,9 @@ export default function PanSizer() {
                         value={shape} 
                         onChange={handleShapeChange}
                     >
-                        <option value="rectangular">Rectangular</option>
-                        <option value="round">Round</option>
-                        <option value="springform">Springform</option>
-                        <option value="bundt">Bundt</option>
-                        <option value="tube">Tube</option>
-                        <option value="loaf">Loaf</option>
+                        {panTypes.map((panType) => (
+                            <option key={panType} value={panType}>{panType}</option>
+                        ))}
                     </select>
                 </p>
 
@@ -138,53 +133,53 @@ export default function PanSizer() {
                 {dimensionsIndex == (pans[shape].length - 1) && (shape === 'rectangular' || shape === 'loaf') && (
                     <p>
                         <input 
+                            className="dimension-input"
                             type="number" 
                             name="length" 
                             placeholder="Length" 
                             required 
                             value={pans[shape][dimensionsIndex].length} 
                             onChange={handleCustomDimensionChange} 
-                            className="dimension-input"
                         /> X&nbsp;
                         <input 
+                            className="dimension-input"
                             type="number" 
                             name="width" 
                             placeholder="Width" 
                             required 
                             value={pans[shape][dimensionsIndex].width} 
                             onChange={handleCustomDimensionChange} 
-                            className="dimension-input"
                         /> X&nbsp;
                         <input 
+                            className="dimension-input"
                             type="number" 
                             name="height" 
                             placeholder="Height" 
                             required 
                             value={pans[shape][dimensionsIndex].height} 
                             onChange={handleCustomDimensionChange} 
-                            className="dimension-input"
                         />
                     </p>
                 )}
                 {dimensionsIndex == (pans[shape].length - 1) && !(shape === 'rectangular' || shape === 'loaf') && (
                     <p>
                         <input 
+                            className="dimension-input"
                             type="number" 
                             name="diameter" 
                             placeholder="Diameter" 
                             required 
                             value={pans[shape][dimensionsIndex].diameter} 
                             onChange={handleCustomDimensionChange} 
-                            className="dimension-input"
                         /> X&nbsp;
                         <input 
+                            className="dimension-input"
                             type="number" 
                             name="height" 
                             placeholder="Height" 
                             required 
                             value={pans[shape][dimensionsIndex].height}  
                             onChange={handleCustomDimensionChange}
-                            className="dimension-input"
                         />
                     </p>
                 )}

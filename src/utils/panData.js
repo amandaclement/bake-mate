@@ -47,6 +47,9 @@ export const defaultPans = {
     ],
 };
 
+// Array of pan types
+export const panTypes = Object.keys(defaultPans);
+
 // Constant variables for calculations
 export const maxVolumeDifference = 0.1;
 export const bundtScaler = 0.7;

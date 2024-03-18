@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { convertMeasurements } from '../utils/recipeHelpers.js';
+import { convertMeasurements, renderResult } from '../utils/recipeHelpers.js';
 
-export default function RecipeScaler() {
+export default function RecipeScaler({ handleResult }) {
 
     // State variables
     const [originalRecipe, setOriginalRecipe] = useState('');
     const [originalSize, setOriginalSize] = useState(''); 
     const [desiredSize, setDesiredSize] = useState(''); 
-    const [result, setResult] = useState(''); 
 
     // Handles changes to user-inputted recipe
     function handleRecipeChange(event) {
@@ -17,17 +16,15 @@ export default function RecipeScaler() {
     // Handles changes to original serving size
     function handleOriginalSizeChange(event) {
         setOriginalSize(event.target.value);
-        setResult('');
     }
 
     // Handles change to desired serving size
     function handleDesiredSizeChange(event) {
         setDesiredSize(event.target.value);
-        setResult('');
     }
 
-    // Handles submit button
-    function handleResult(event) {
+    // Handles submit button which calls handleResult(), passing the new result to it
+    function handleSubmit(event) {
         // Prevent page reload on button click
         event.preventDefault();
 
@@ -43,8 +40,8 @@ export default function RecipeScaler() {
         // Process the recipe, scaling measurements as needed
         const modifiedRecipe = convertMeasurements(originalRecipe, recipeScaler);
 
-        // Update result state variable
-        setResult(modifiedRecipe);
+        // Call handleResult() with the new result, which in turn updates the result state in App
+        handleResult(renderResult(modifiedRecipe));
     }
 
     // React component for Recipe Scaler
@@ -81,8 +78,7 @@ export default function RecipeScaler() {
                         onChange={handleDesiredSizeChange} 
                     />
                 </p>
-                <button onClick={handleResult}>Submit</button>
-                {result}
+                <button onClick={handleSubmit}>Submit</button>
             </form>
         </section>
     );

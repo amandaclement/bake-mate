@@ -3,6 +3,8 @@
 :root {
     --primary-color: #FFFFFF;
     --secondary-color: #D86B44;
+    --tertiary-color: #8DAEBF;
+    --accent-color: #E2E4E3;
     --heading-font-family: "Ojuju", sans-serif;
     --body-font-family: "Vollkorn", sans-serif;
     --block-border-radius: 15px;
@@ -36,11 +38,11 @@ h2 {
 h1 {
     font-weight: 800;
     font-size: 3rem;
+    color: var(--tertiary-color);
 }
 
 h2 {
     font-size: 2.2rem;
-    color: var(--primary-color);
     text-align: center;
 }
 
@@ -53,6 +55,10 @@ h2 {
 
 #main-content > div {
     flex: 1;
+}
+
+#tool-container {
+    color: var(--primary-color);
 }
 
 #toolbar {
@@ -165,4 +171,25 @@ h2 {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     transition: 0.2s;
+}
+
+#result-container {
+    padding: 8.6rem 4rem 2rem 4rem;
+    box-sizing: border-box;
+    color: var(--tertiary-color);
+}
+
+#result {
+    display: flex;
+    justify-content: center;
+}
+
+#result p,
+#result ul {
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+#result li {
+    margin-top: 0.5rem;
 }

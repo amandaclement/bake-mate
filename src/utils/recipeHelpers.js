@@ -23,6 +23,11 @@ function isRegularFraction(str) {
     return fractionRegex.test(str);
 }
 
+// Rounds a number to 4 decimal places
+function roundNumber(num) {
+    return Math.round((num + Number.EPSILON) * 10000) / 10000;
+}
+
 // If str represents a decimal, return its corresponding scaled decimal number
 function processNumber(str) {
     if (isNumber(str)) {
@@ -61,11 +66,13 @@ function processFraction(str) {
         const decimalFraction = eval(convertedFraction);
         return Number(whole) + Number(decimalFraction);
 
+
     } else if (isRegularFraction(str)) {
         // Convert fraction to decimal and return as a number
         const decimalFraction = eval(str);
         return Number(decimalFraction);
     }
+        
     return str;
 }
 
@@ -77,20 +84,24 @@ function processLine(str, scaler) {
 
     for (var i = 0; i < numTerms; i++) {
         invalidLine = false;
+
+        // Process term as possible number or fraction
         var term = processNumber(terms[i]);
         term = processFraction(term); 
-
-        // If term is a number at this point, can safely scale it
-        if (isNumber(term)) {
-            term = term * scaler;
-        }
 
         // Accounts for mixed fractions separated by whitespace (e.g. 1 ½)
         // If current term is a decimal number and next term is a fraction, sum them
         if (isNumber(term) && i < numTerms-1 && (isUnicodeFraction(terms[i+1]) || isRegularFraction(terms[i+1]))) {
-            term += processFraction(terms[i+1]) * scaler;
+            term += processFraction(terms[i+1]);
             i++;
         } 
+
+        // If term is a number at this point, can safely scale and round it
+        if (isNumber(term)) {
+            term = roundNumber(term * scaler);
+        }
+
+        // Update the line
         processedLine += term + ' ';
 
         // Inform user if line is invalid
@@ -116,4 +127,9 @@ export function convertMeasurements(str, scaler) {
             })}
         </ul>
     );
+}
+
+// Prepares result to be rendered
+export function renderResult(result) {
+    return result;
 }

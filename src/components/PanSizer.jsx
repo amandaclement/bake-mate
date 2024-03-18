@@ -1,30 +1,27 @@
 import { useState } from 'react';
 import { maxVolumeDifference, defaultPans, panTypes } from '../utils/panData.js';
-import { calculateVolume, generateLabel, initializePanData } from '../utils/panHelpers.js';
+import { calculateVolume, generateLabel, initializePanData, renderResult } from '../utils/panHelpers.js';
 
 // Assign volume and label to each standard pan size
 initializePanData();
 
 // React component for Pan Sizer
-export default function PanSizer() {
+export default function PanSizer({ handleResult }) {
 
     // State variables
     const [pans, setPans] = useState(defaultPans);
     const [shape, setShape] = useState('rectangular');
     const [dimensionsIndex, setDimensionsIndex] = useState(0);
-    const [result, setResult] = useState('');
 
     // Handles shape change
     function handleShapeChange(event) {
         setShape(event.target.value);
         setDimensionsIndex(0);
-        setResult('');
     }
 
     // Handles dimension change
     function handleDimensionChange(event) {
         setDimensionsIndex(event.target.value);
-        setResult('');
     }
 
     // Handles custom dimension input entries
@@ -35,11 +32,10 @@ export default function PanSizer() {
         const updatedPans = { ...pans };
         updatedPans[shape][dimensionsIndex][name] = value;
         setPans(updatedPans);
-        setResult('');
     }
 
-    // Handles submit button
-    function handleResult(event) {
+    // Handles submit button which calls handleResult(), passing the new result to it
+    function handleSubmit(event) {
         // Prevent page reload on button click
         event.preventDefault(); 
 
@@ -50,7 +46,12 @@ export default function PanSizer() {
             updatedPans[shape][dimensionsIndex].volume = calculateVolume(shape, pans[shape][dimensionsIndex]);
             setPans(updatedPans);
         }
-        setResult(renderMatches());
+
+        // Get the array of matches
+        const matches = findMatches();
+
+        // Call handleResult() with the new result, which in turn updates the result state in App
+        handleResult(renderResult(matches));
     }
 
     // Returns an array of acceptable pan substitutes, formatted as type:label
@@ -72,24 +73,6 @@ export default function PanSizer() {
             });
         } 
         return matches;  
-    }
-
-    // Returns the matches in list form, rendy to be rendered
-    function renderMatches() {
-        const matches = findMatches();
-        if (matches.length === 0) {
-            return <p>No substitutions found.</p>;
-        }
-        return (
-            <div>
-                <h3>Substitutions:</h3>
-                <ul>
-                    {matches.map((match, index) => (
-                        <li key={index}>{match}</li>
-                    ))}
-                </ul>
-            </div>
-        );
     }
 
     // Renders the component
@@ -183,8 +166,7 @@ export default function PanSizer() {
                         />
                     </p>
                 )}
-                <button onClick={handleResult}>Submit</button>
-                {result}
+                <button onClick={handleSubmit}>Submit</button>
             </form>
         </section>
     );

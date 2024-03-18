@@ -1,45 +1,31 @@
 import { useState } from 'react';
 import { unitTypes } from '../utils/unitData.js';
-import { convertMeasurement } from '../utils/unitHelpers.js';
+import { convertMeasurement, renderResult } from '../utils/unitHelpers.js';
 
-export default function UnitConverter() {
+export default function UnitConverter({ handleResult }) {
 
     // State variables
     const [numUnits, setNumUnits] = useState(''); 
     const [originalUnit, setOriginalUnit] = useState(unitTypes[0]);
     const [desiredUnit, setDesiredUnit] = useState(unitTypes[0]); 
-    const [result, setResult] = useState(''); 
 
     // Handles changes to number of units
     function handleNumUnitsChange(event) {
         setNumUnits(event.target.value);
-        setResult('');
     }
 
     // Handles changes to original unit type
     function handleOriginalUnitChange(event) {
         setOriginalUnit(event.target.value);
-        setResult('');
     }
 
     // Handles changes to desired unit type
     function handleDesiredUnitChange(event) {
         setDesiredUnit(event.target.value);
-        setResult('');
     }
 
-    // Prepares measurement conversion to be rendered
-    function renderResult(conversion) {
-        return (
-            <div>
-                <h3>Conversion: </h3>
-                <p>{conversion} {desiredUnit}</p>
-            </div>
-        );
-    }
-
-    // Handles submit button
-    function handleResult(event) {
+    // Handles submit button which calls handleResult(), passing the new result to it
+    function handleSubmit(event) {
         // Prevent page reload on button click
         event.preventDefault(); 
 
@@ -52,8 +38,8 @@ export default function UnitConverter() {
         // Calculate conversion
         const conversion = convertMeasurement(originalUnit, desiredUnit, numUnits);
 
-        // Update result
-        setResult(renderResult(conversion));
+        // Call handleResult() with the new result, which in turn updates the result state in App
+        handleResult(renderResult(conversion, desiredUnit));
     }
     
     // React component for Unit Converter
@@ -95,8 +81,7 @@ export default function UnitConverter() {
                         ))}
                     </select>
                 </p>
-                <button onClick={handleResult}>Submit</button>
-                {result}
+                <button onClick={handleSubmit}>Submit</button>
             </form>
         </section>
     );

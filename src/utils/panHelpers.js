@@ -67,3 +67,19 @@ export function initializePanData() {
         });
     }
 }
+
+// Returns the resulting matches in list form, rendy to be rendered
+export function renderResult(matches) {
+    if (matches.length === 0) {
+        return <p>No substitutions found.</p>;
+    }
+    return (
+        <div>
+            <ul>
+                {matches.map((match, index) => (
+                    <li key={index}>{match}</li>
+                ))}
+            </ul>
+        </div>
+    );
+    }

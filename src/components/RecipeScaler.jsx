@@ -50,15 +50,17 @@ export default function RecipeScaler() {
     // React component for Recipe Scaler
     return (
         <section id="recipe-scaler" className="tool">
-            <h2 className="form-title">Recipe Scaler</h2>
-            <p>Paste your recipe: </p>
+            <h2 className="form-title">RECIPE SCALER</h2>
             <form>
-                <textarea 
-                    value={originalRecipe}
-                    onChange={handleRecipeChange}
-                />
                 <p>
-                    <label>Original serving size: </label>
+                    <label>Recipe</label>
+                    <textarea 
+                        value={originalRecipe}
+                        onChange={handleRecipeChange}
+                    />
+                </p>
+                <p>
+                    <label>Original serving size </label>
                     <input 
                         className="number-input"
                         type="number" 
@@ -69,7 +71,7 @@ export default function RecipeScaler() {
                     />
                 </p>
                 <p>
-                    <label>Desired serving size: </label>
+                    <label>Desired serving size </label>
                     <input 
                         className="number-input"
                         type="number" 
@@ -79,7 +81,7 @@ export default function RecipeScaler() {
                         onChange={handleDesiredSizeChange} 
                     />
                 </p>
-                <button onClick={handleResult}>Enter</button>
+                <button onClick={handleResult}>Submit</button>
                 {result}
             </form>
         </section>

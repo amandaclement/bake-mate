@@ -95,10 +95,10 @@ export default function PanSizer() {
     // Renders the component
     return (
         <section id="pan-sizer" className="tool">
-            <h2 className="form-title">Pan Sizer</h2>
+            <h2 className="form-title">PAN SIZER</h2>
             <form className="basic-form">
                 <p>
-                    <label>Shape: </label>
+                    <label>Shape </label>
                     <select 
                         id="shape" 
                         name="shape" 
@@ -112,7 +112,7 @@ export default function PanSizer() {
                 </p>
 
                 <p>
-                    <label>Dimensions: </label>
+                    <label>Dimensions </label>
                     <select
                         id="shape-dimensions"
                         name="shape-dimensions"
@@ -183,10 +183,7 @@ export default function PanSizer() {
                         />
                     </p>
                 )}
-
-                <button onClick={handleResult}>Enter</button>
-                
-                {/* Renders a list of pan matches, if any */}
+                <button onClick={handleResult}>Submit</button>
                 {result}
             </form>
         </section>

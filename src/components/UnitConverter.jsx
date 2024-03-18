@@ -59,10 +59,10 @@ export default function UnitConverter() {
     // React component for Unit Converter
     return (
         <section id="unit-converter" className="tool">
-            <h2 className="form-title">Unit Converter</h2>
+            <h2 className="form-title">UNIT CONVERTER</h2>
             <form className="basic-form">
                 <p>
-                    <label>Number of units: </label>
+                    <label>Number of Units </label>
                     <input 
                         className="number-input"
                         name="num-units"
@@ -72,7 +72,7 @@ export default function UnitConverter() {
                     />  
                 </p>
                 <p>
-                    <label>From: </label>
+                    <label>From </label>
                     <select 
                         name="originalUnit"
                         value={originalUnit} 
@@ -84,7 +84,7 @@ export default function UnitConverter() {
                     </select>
                 </p>
                 <p>
-                    <label>To: </label>
+                    <label>To </label>
                     <select 
                         name="desiredUnit"
                         value={desiredUnit} 
@@ -95,7 +95,7 @@ export default function UnitConverter() {
                         ))}
                     </select>
                 </p>
-                <button onClick={handleResult}>Enter</button>
+                <button onClick={handleResult}>Submit</button>
                 {result}
             </form>
         </section>

@@ -5,14 +5,22 @@ import RecipeScaler from './components/RecipeScaler.jsx';
 
 function App() {
   return (
-    <>
+    <div id="container">
       <Header />
-      <div id="tools">
-        <UnitConverter />
-        <PanSizer />
-        <RecipeScaler />
+      <div id="main-content">
+        <div id="tools">
+          <div id="toolbar">
+            <div id="toolbar-content" />
+            <div id="toolbar-gap">
+              <div id="toolbar-square" />
+              <div id="toolbar-ellipse" />
+            </div>
+          </div>
+            <RecipeScaler />
+        </div>
+        <div id="results"></div>
       </div>
-    </>
+    </div>
   );
 }
 

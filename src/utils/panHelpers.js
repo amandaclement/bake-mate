@@ -1,4 +1,4 @@
-import { defaultPans, bundtScaler, cubicInchToLiter } from '../utils/panData.js';
+import { defaultPans, bundtScaler, cubicInchToLiter, panTypes } from '../utils/panData.js';
 
 // Converts cubic inches to litres
 function cubicInchesToLitres(x) {
@@ -48,7 +48,7 @@ export function calculateVolume(type, dimensions) {
 // Generates dimension options for specific pan type
 export function generateLabel(type, dimensions) {
     if (dimensions.label === 'custom') {
-        return 'Custom';
+        return 'custom';
     } else if (type === 'rectangular' || type === 'loaf') {
         const { length, width, height } = dimensions;
         return `${length} X ${width} X ${height}`;
@@ -68,6 +68,25 @@ export function initializePanData() {
     }
 }
 
+// Returns true if str represents a number
+function isNumber(str) {
+    return !isNaN(str);
+}
+
+// Returns false if any custom input field is missing a value
+export function isInputValid({ length, width, height, diameter, label }, type) {
+    if (label === 'custom') {
+        if (type === 'rectangular' || type === 'loaf') {
+            if (!isNumber(length) || !isNumber(width) ||!isNumber(height)) {
+                return false;
+            }
+        } else if (!isNumber(diameter) || !isNumber(height)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 // Returns the resulting matches in list form, rendy to be rendered
 export function renderResult(matches) {
     if (matches.length === 0) {
@@ -82,4 +101,4 @@ export function renderResult(matches) {
             </ul>
         </div>
     );
-    }
+}

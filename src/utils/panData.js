@@ -1,9 +1,9 @@
 // Default custom pan dimensions
 export const customDefaultDimensions = {
-    length: 'Length',
-    width: 'Width',
-    height: 'Height',
-    diameter: 'Diameter',
+    length: 'length',
+    width: 'width',
+    height: 'height',
+    diameter: 'diameter',
     label: 'custom',
     volume: 0
 };

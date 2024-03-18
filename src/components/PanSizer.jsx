@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { maxVolumeDifference, defaultPans, panTypes } from '../utils/panData.js';
-import { calculateVolume, generateLabel, initializePanData, renderResult } from '../utils/panHelpers.js';
+import { calculateVolume, generateLabel, initializePanData, isInputValid, renderResult } from '../utils/panHelpers.js';
 
 // Assign volume and label to each standard pan size
 initializePanData();
@@ -39,11 +39,20 @@ export default function PanSizer({ handleResult }) {
         // Prevent page reload on button click
         event.preventDefault(); 
 
+        // Get current pan
+        const pan = pans[shape][dimensionsIndex];
+
+        // If number of units value is missing or not greater than 0, prompt user to correct
+        if (!isInputValid(pan, shape)) {
+            alert('Please enter a value for all custom fields.');
+            return;
+        }
+
         // Update volume if dealing with custom dimensions
         if (dimensionsIndex == (pans[shape].length - 1)) {
             // Clone pans, add new volume to clone if needed, then assign clone back to pans
             const updatedPans = { ...pans };
-            updatedPans[shape][dimensionsIndex].volume = calculateVolume(shape, pans[shape][dimensionsIndex]);
+            updatedPans[shape][dimensionsIndex].volume = calculateVolume(shape, pan);
             setPans(updatedPans);
         }
 
@@ -64,7 +73,7 @@ export default function PanSizer({ handleResult }) {
                 // Check conditions for matching pans
                 const isDifferentLabel = pan.label !== label;
                 const isDifferentShape = shape !== type;
-                const isNotCustom = pan.label !== 'Custom';
+                const isNotCustom = pan.label !== 'custom';
                 const isVolumeWithinRange = Math.abs(pan.volume - volume) < maxVolumeDifference;
 
                 if ((isDifferentLabel || !isDifferentLabel && isDifferentShape) && isNotCustom && isVolumeWithinRange) {
@@ -123,7 +132,7 @@ export default function PanSizer({ handleResult }) {
                             required 
                             value={pans[shape][dimensionsIndex].length} 
                             onChange={handleCustomDimensionChange} 
-                        /> X&nbsp;
+                        /><br />
                         <input 
                             className="dimension-input"
                             type="number" 
@@ -132,7 +141,7 @@ export default function PanSizer({ handleResult }) {
                             required 
                             value={pans[shape][dimensionsIndex].width} 
                             onChange={handleCustomDimensionChange} 
-                        /> X&nbsp;
+                        /><br />
                         <input 
                             className="dimension-input"
                             type="number" 
@@ -154,7 +163,7 @@ export default function PanSizer({ handleResult }) {
                             required 
                             value={pans[shape][dimensionsIndex].diameter} 
                             onChange={handleCustomDimensionChange} 
-                        /> X&nbsp;
+                        /><br />
                         <input 
                             className="dimension-input"
                             type="number" 

@@ -93,12 +93,10 @@ export function renderResult(matches) {
         return <p>No substitutions found.</p>;
     }
     return (
-        <div>
-            <ul>
-                {matches.map((match, index) => (
-                    <li key={index}>{match}</li>
-                ))}
-            </ul>
-        </div>
+        <ul>
+            {matches.map((match, index) => (
+                <li key={index}>{match}</li>
+            ))}
+        </ul>
     );
 }

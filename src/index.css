@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Ojuju:wght@200..800&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
 
 :root {
-    --primary-color: #FFFFFF;
+    --primary-color: #F1EBD9;
     --secondary-color: #D86B44;
     --tertiary-color: #8DAEBF;
-    --accent-color: #E2E4E3;
+    --accent-color: #FFFFFF;
     --heading-font-family: "Ojuju", sans-serif;
     --body-font-family: "Vollkorn", sans-serif;
     --block-border-radius: 15px;
@@ -14,6 +14,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     font-family: var(--body-font-family);
 }
 
@@ -31,7 +32,8 @@ header {
 }
 
 h1, 
-h2 {
+h2,
+button {
     font-family: var(--heading-font-family);
 }
 
@@ -47,9 +49,7 @@ h2 {
 }
 
 #main-content {
-    height: 100vh;
     padding: 2rem;
-    box-sizing: border-box;
     display: flex;
 }
 
@@ -62,16 +62,50 @@ h2 {
 }
 
 #toolbar {
-    width: 100%;
-    height: 4.6rem;
-    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
     display: flex;
+    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
 }
 
 #toolbar-content {
     flex: 2;
+    padding: 1rem;
     background-color: var(--secondary-color);
     border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
+}
+
+#toolbar nav { 
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#toolbar nav button,
+.tool button {
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+    border: 1.5px solid var(--primary-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+#toolbar nav button {
+    flex-grow: 1; 
+    max-width: 50%;
+    margin: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+}
+
+#toolbar nav button:hover,
+.tool button:hover,
+#toolbar .active {
+    background-color: var(--primary-color);
+    color: var(--secondary-color); 
+}
+
+#toolbar nav button:hover,
+.tool button:hover {
+    transition: 0.2s;
 }
 
 #toolbar-gap {
@@ -100,11 +134,10 @@ h2 {
 
 .tool {
     height: calc(100% - 4.6rem);
-    padding: 4rem 2rem 2rem 2rem;
+    padding: 4rem 2rem;
     background-color: var(--secondary-color);
     color: var(--primary-color);
     border-radius: 0 var(--block-border-radius) var(--block-border-radius) var(--block-border-radius);
-    box-sizing: border-box;
 }
 
 .tool label {
@@ -120,10 +153,10 @@ h2 {
 .tool input,
 .tool select, 
 .tool textarea,
-.tool button {
+.tool button,
+#toolbar nav button {
     display: block;
     border-radius: var(--field-border-radius);
-    box-sizing: border-box;
 }
 
 .tool input, 
@@ -159,23 +192,13 @@ h2 {
 }
 
 .tool button {
-    width: 6rem;
-    margin-top: 30px;
-    padding-top: 1px;
+    margin-top: 2rem;
+    padding: 0.5rem 1.2rem;
     background-color: var(--secondary-color);
-    color: var(--primary-color);
-    border: 1.5px solid var(--primary-color);
-}
-
-.tool button:hover {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    transition: 0.2s;
 }
 
 #result-container {
     padding: 8.6rem 4rem 2rem 4rem;
-    box-sizing: border-box;
     color: var(--tertiary-color);
 }
 
@@ -187,9 +210,37 @@ h2 {
 #result p,
 #result ul {
     display: inline-block;
+}
+
+#result p {
     margin-top: 2rem;
+}
+
+#result ul {
+    margin-top: 1.5rem; 
 }
 
 #result li {
     margin-top: 0.5rem;
+}
+
+#size-message {
+    display: none;
+}
+
+/* Rules for 930px and less */
+@media only screen and (max-width: 930px) {
+    header,
+    #main-content {
+        display: none;
+    }
+
+    #size-message {
+        display: block;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
 }

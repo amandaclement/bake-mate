@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Ojuju:wght@200..800&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Ojuju:wght@200..800&display=swap');
 
 :root {
     --primary-color: #F1EBD9;
@@ -6,7 +6,7 @@
     --tertiary-color: #8DAEBF;
     --accent-color: #FFFFFF;
     --heading-font-family: "Ojuju", sans-serif;
-    --body-font-family: "Vollkorn", sans-serif;
+    --body-font-family: "Karla", sans-serif;
     --block-border-radius: 15px;
     --field-border-radius: 30px;
 }
@@ -16,6 +16,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: var(--body-font-family);
+    font-weight: 500;  
 }
 
 body {
@@ -25,26 +26,31 @@ body {
 
 header {
     position: absolute;
+    top: 1.4rem;
     left: 50%;
-    top: 1.5rem;
     transform: translateX(-50%);
     z-index: 10;
 }
 
-h1, 
-h2,
-button {
+#title, 
+h2 {
     font-family: var(--heading-font-family);
 }
 
-h1 {
+#title {
     font-weight: 800;
-    font-size: 3rem;
-    color: var(--tertiary-color);
+    font-size: 2rem;
+    fill: var(--tertiary-color);
+}
+
+#title-symbol {
+    font-size: 7.5rem;
+    fill: var(--secondary-color);
 }
 
 h2 {
     font-size: 2.2rem;
+    font-weight: 700;
     text-align: center;
 }
 
@@ -163,6 +169,7 @@ h2 {
 .tool select,
 .tool textarea {
     width: 100%;
+    margin-top: 0.25rem;
     background-color: var(--primary-color);
     color: var(--secondary-color);
     border: none;

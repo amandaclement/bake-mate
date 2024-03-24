@@ -19,8 +19,8 @@ export default function Toolbar({ labels, defaultLabel, handleTool }) {
 
     // React component for Toolbar
     return (
-        <div id="toolbar">
-            <div id="toolbar-content">
+        <div id="toolbar" className="folder-top">
+            <div className="folder-top-content">
                 <nav>
                     {labels.map(label => (
                         <button 
@@ -33,10 +33,10 @@ export default function Toolbar({ labels, defaultLabel, handleTool }) {
                     ))}
                 </nav>
             </div>
-            {/* Used to create toolbar shape */}
-            <div id="toolbar-gap">
-                <div id="toolbar-square" />
-                <div id="toolbar-ellipse" />
+            {/* Used to create folder shape */}
+            <div className="folder-top-gap">
+                <div className="folder-top-square" />
+                <div className="folder-top-ellipse" />
             </div>
         </div>
     );

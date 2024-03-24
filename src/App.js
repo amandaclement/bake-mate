@@ -4,6 +4,8 @@ import Toolbar from './components/Toolbar.jsx';
 import UnitConverter from './components/UnitConverter.jsx';
 import PanSizer from './components/PanSizer.jsx';
 import RecipeScaler from './components/RecipeScaler.jsx';
+import Result from './components/Result.jsx';
+import Note from './components/Note.jsx';
 
 // Array of objects containing tool components and their labels
 const tools = [
@@ -35,6 +37,9 @@ function App() {
   // State variable for updating result of calculation
   const [result, setResult] = useState('');
 
+  // State variable for notes
+  const [notes, setNotes] = useState([]);
+
   // Handles setting tool based on user's choice from toolbar options
   function handleTool(label) {
     setToolLabel(label);
@@ -46,11 +51,15 @@ function App() {
   // Handles updating result, which gets triggered by tool button
   function handleResult(newResult) {
     setResult(
-        <>
-          <h2>RESULT</h2>
-          <div id="result">{newResult}</div>
-        </>
+      <div id="result-text">{newResult}</div>
     );
+  }
+
+  // Handles adding a new note, which gets triggered by result button
+  function addNote() {
+    // Create a new Note component and add it to the existing notes array
+    const newNote = <Note key={notes.length + 1} title={`Note ${notes.length + 1}`} content={result} />;
+    setNotes(prevNotes => [...prevNotes, newNote]);
   }
 
   // Renders selected tool component
@@ -66,15 +75,25 @@ function App() {
     <div id="container">
       <Header />
       <div id="main-content">
-        <div id="tool-container">
+        <section id="tool-container">
           <Toolbar labels={toolLabels} defaultLabel={defaultToolLabel} handleTool={handleTool} />
+
           {/* Render active tool component */}
           {renderToolComponent()} 
-        </div>
-        <div id="result-container">
-          {result}
-        </div>
+        </section>
+        <section id="result-container">
+          {result && <Result content={result} addNote={addNote} />}
+        </section>
       </div>
+
+      {/* Render notes */}
+      <section id="note-container">
+        {notes.map((note, index) => (
+          <div key={index}>{note}</div>
+        ))}
+      </section>
+
+      {/* <Note title="Note" content={result} /> */}
       <p id="size-message">BakeMate is not yet optimized for this screen size. Please increase width for now.</p>
     </div>
   );

@@ -44,7 +44,7 @@ export default function UnitConverter({ handleResult }) {
     
     // React component for Unit Converter
     return (
-        <section id="unit-converter" className="tool">
+        <section id="unit-converter" className="tool folder-bottom">
             <h2 className="form-title">UNIT CONVERTER</h2>
             <form className="basic-form">
                 <p>

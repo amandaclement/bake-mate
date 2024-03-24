@@ -46,7 +46,7 @@ export default function RecipeScaler({ handleResult }) {
 
     // React component for Recipe Scaler
     return (
-        <section id="recipe-scaler" className="tool">
+        <section id="recipe-scaler" className="tool folder-bottom">
             <h2 className="form-title">RECIPE SCALER</h2>
             <form>
                 <p>

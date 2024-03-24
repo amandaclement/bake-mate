@@ -86,7 +86,7 @@ export default function PanSizer({ handleResult }) {
 
     // Renders the component
     return (
-        <section id="pan-sizer" className="tool">
+        <section id="pan-sizer" className="tool folder-bottom">
             <h2 className="form-title">PAN SIZER</h2>
             <form className="basic-form">
                 <p>

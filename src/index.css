@@ -16,12 +16,11 @@
     padding: 0;
     box-sizing: border-box;
     font-family: var(--body-font-family);
-    font-weight: 500;  
+    font-weight: 500; 
 }
 
 body {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
 }
 
 header {
@@ -33,7 +32,8 @@ header {
 }
 
 #title, 
-h2 {
+h2,
+h3 {
     font-family: var(--heading-font-family);
 }
 
@@ -48,58 +48,71 @@ h2 {
     fill: var(--secondary-color);
 }
 
+h2, 
+h3 {
+    font-weight: 700; 
+}
+
 h2 {
     font-size: 2.2rem;
-    font-weight: 700;
-    text-align: center;
+    text-align: center;  
+}
+
+h3 {
+    font-size: 1.4rem;
 }
 
 #main-content {
-    padding: 2rem;
+    padding: 3.6rem 2rem 0 2rem;
     display: flex;
+    gap: 2rem;
 }
 
-#main-content > div {
+#main-content > section {
     flex: 1;
 }
 
-#tool-container {
-    color: var(--primary-color);
+button {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    border-radius: var(--field-border-radius);
 }
 
-#toolbar {
-    display: flex;
-    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
-}
-
-#toolbar-content {
-    flex: 2;
-    padding: 1rem;
-    background-color: var(--secondary-color);
-    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
-}
-
-#toolbar nav { 
-    display: flex;
-    flex-wrap: wrap;
+button:hover {
+    transition: 0.2s;
+    cursor: pointer;
 }
 
 #toolbar nav button,
 .tool button {
     color: var(--primary-color);
-    background-color: var(--secondary-color);
+    background-color: transparent;
     border: 1.5px solid var(--primary-color);
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-transform: uppercase;
 }
 
 #toolbar nav button {
     flex-grow: 1; 
     max-width: 50%;
     margin: 0.4rem;
-    padding: 0.5rem 0.7rem;
     font-size: 0.75rem;
+}
+
+.tool button,
+#result-container button {
+    margin-top: 2rem;
+}
+
+#result-container button {
+    color: var(--primary-color);
+    background-color: var(--tertiary-color);
+    border: 1.5px solid var(--tertiary-color); 
+}
+
+#result-container button:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
 #toolbar nav button:hover,
@@ -109,41 +122,67 @@ h2 {
     color: var(--secondary-color); 
 }
 
-#toolbar nav button:hover,
-.tool button:hover {
-    transition: 0.2s;
+.folder-top {
+    display: flex;
+    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
 }
 
-#toolbar-gap {
+.folder-top-content {
+    flex: 3;
+    padding: 1rem;
+    border-radius: var(--block-border-radius) var(--block-border-radius) 0 0;
+}
+
+.folder-top-gap {
     flex: 1;
-    position: relative;
+    position: relative;  
 }
 
-#toolbar-square,
-#toolbar-ellipse {
+.folder-top-square,
+.folder-top-ellipse {
     position: absolute;
     bottom: 0;
 }
 
-#toolbar-square {
+.folder-top-square {
     width: 1rem;
     height: 1rem;
+}
+
+.folder-top-ellipse {
+    width: 1rem;
+    height: 2rem;
+    background-color: var(--primary-color);
+    border-radius: 1rem 0 0 1rem;
+}
+
+.folder-bottom {
+    border-radius: 0 var(--block-border-radius) var(--block-border-radius) var(--block-border-radius);
+}
+
+#toolbar .folder-top-content,
+#toolbar .folder-top-square,
+.tool.folder-bottom {
     background-color: var(--secondary-color);
 }
 
-#toolbar-ellipse {
-    width: 2rem;
-    height: 2rem;
-    background-color: var(--primary-color);
-    border-radius: 50%;
+#tool-container {
+    color: var(--primary-color);
+}
+
+#toolbar .folder-top-content
+#toolbar .folder-top-ellipse {
+    background-color: var(--secondary-color);
+    background-color: red;
+}
+
+#toolbar nav { 
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .tool {
-    height: calc(100% - 4.6rem);
     padding: 4rem 2rem;
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    border-radius: 0 var(--block-border-radius) var(--block-border-radius) var(--block-border-radius);
 }
 
 .tool label {
@@ -158,9 +197,7 @@ h2 {
 
 .tool input,
 .tool select, 
-.tool textarea,
-.tool button,
-#toolbar nav button {
+.tool textarea {
     display: block;
     border-radius: var(--field-border-radius);
 }
@@ -193,52 +230,75 @@ h2 {
 
 .tool textarea {
     height: 8rem;
-    padding: 6px 10px;
+    padding: 7px 10px;
     border-radius: var(--block-border-radius);
     resize: none;
 }
 
-.tool button {
-    margin-top: 2rem;
-    padding: 0.5rem 1.2rem;
-    background-color: var(--secondary-color);
-}
-
 #result-container {
-    padding: 8.6rem 4rem 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; 
+    padding: 0rem 4rem 2rem 4rem;
     color: var(--tertiary-color);
 }
 
-#result {
-    display: flex;
-    justify-content: center;
-}
-
-#result p,
-#result ul {
+.result p,
+.result ul {
     display: inline-block;
 }
 
-#result p {
+.result p {
     margin-top: 2rem;
 }
 
-#result ul {
+.result ul {
     margin-top: 1.5rem; 
 }
 
-#result li {
+.result li {
     margin-top: 0.5rem;
+}
+
+#note-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 12rem 1rem 0 1rem;
+}
+
+#note-container > div {
+    color: var(--primary-color);
+    margin: 1rem;
+    min-width: 12rem;
+}
+
+.note h3 {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    text-transform: uppercase;
+}
+
+.note .folder-top-content,
+.note .folder-top-square,
+.note .folder-bottom {
+    background-color: var(--tertiary-color);
+}
+
+.note .folder-bottom {
+    padding: 0.5rem 1.5rem 1.3rem 1.5rem;
 }
 
 #size-message {
     display: none;
 }
 
+
 /* Rules for 930px and less */
 @media only screen and (max-width: 930px) {
     header,
-    #main-content {
+    #main-content,
+    #note-container {
         display: none;
     }
 

@@ -1,25 +1,25 @@
 import { useState } from 'react';
 
-export default function Toolbar({ labels, defaultLabel, handleTool }) {
+export default function SectionMenu({ labels, defaultLabel, handleMenuChoice }) {
 
     // State variable for keeping track of the active button's label
     const [activeButton, setActiveButton] = useState(defaultLabel);
 
-    // Handles tool selection
-    function handleToolChoice(event, label) {
+    // Handles menu selection
+    function handleChoice(event, label) {
         // Prevent page reload on button click
         event.preventDefault();
 
         // Update activeButton to the label of the clicked button
         setActiveButton(label);
         
-        // Call handleTool() with the chosen tool, which in turn updates the tool state in App
-        handleTool(label);
+        // Call handleMenuChoice() with the chosen menu label, which in turn updates the state in App
+        handleMenuChoice(label);
     }
 
-    // React component for Toolbar
+    // React component for SectionMenu
     return (
-        <div id="toolbar" className="folder-top">
+        <div className="folder-top">
             <div className="folder-top-content">
                 <nav>
                     {labels.map(label => (
@@ -27,7 +27,7 @@ export default function Toolbar({ labels, defaultLabel, handleTool }) {
                             key={label}
                             // Apply the 'active' class to the button only if its label matches activeButton state variable
                             className={activeButton === label ? 'active' : ''}
-                            onClick={(event) => handleToolChoice(event, label)}>
+                            onClick={(event) => handleChoice(event, label)}>
                             {label}
                     </button>
                     ))}

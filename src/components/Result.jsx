@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function Result({ content, addNote }) {
+export default function Result({ content, addRecipe }) {
 
     // State variable for extending button on hover
     const [isHovered, setIsHovered] = useState(false);
@@ -14,9 +14,9 @@ export default function Result({ content, addNote }) {
             <button 
                 onMouseEnter={() => setIsHovered(true)} 
                 onMouseLeave={() => setIsHovered(false)}
-                onClick={addNote}
+                onClick={() => addRecipe('', content)}
             >
-                {isHovered ? '+ SAVE AS NOTE' : '+'}
+                {isHovered ? '+ SAVE RECIPE' : '+'}
             </button>
         </>
     );

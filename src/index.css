@@ -85,14 +85,14 @@ button:hover {
     cursor: pointer;
 }
 
-#toolbar nav button,
-.tool button {
+.folder-top nav button,
+#tool-container button {
     color: var(--primary-color);
     background-color: transparent;
     border: 1.5px solid var(--primary-color);
 }
 
-#toolbar nav button {
+.folder-top nav button {
     flex-grow: 1; 
     max-width: 50%;
     margin: 0.4rem;
@@ -115,11 +115,17 @@ button:hover {
     border-color: var(--secondary-color);
 }
 
-#toolbar nav button:hover,
-.tool button:hover,
-#toolbar .active {
+#tool-container .folder-top nav button:hover,
+#tool-container .folder-top .active,
+.tool button:hover {
     background-color: var(--primary-color);
     color: var(--secondary-color); 
+}
+
+#recipe-container .folder-top nav button:hover,
+#recipe-container .folder-top .active {
+    background-color: var(--primary-color);
+    color: var(--tertiary-color);    
 }
 
 .folder-top {
@@ -160,51 +166,52 @@ button:hover {
     border-radius: 0 var(--block-border-radius) var(--block-border-radius) var(--block-border-radius);
 }
 
-#toolbar .folder-top-content,
-#toolbar .folder-top-square,
-.tool.folder-bottom {
-    background-color: var(--secondary-color);
-}
-
-#tool-container {
+#tool-container,
+#recipe-container {
     color: var(--primary-color);
 }
 
-#toolbar .folder-top-content
-#toolbar .folder-top-ellipse {
+#tool-container .folder-top-content,
+#tool-container .folder-top .folder-top-square,
+#tool-container .folder-bottom {
     background-color: var(--secondary-color);
-    background-color: red;
 }
 
-#toolbar nav { 
+#recipe-container .folder-top-content,
+#recipe-container .folder-top .folder-top-square,
+#recipe-container .folder-bottom {
+    background-color: var(--tertiary-color);
+}
+
+.folder-top nav { 
     display: flex;
     flex-wrap: wrap;
 }
 
-.tool {
+.folder-bottom {
     padding: 4rem 2rem;
 }
 
-.tool label {
+#tool-container label {
     margin-left: 8px;
     font-size: 0.9rem;
 }
 
-.tool p,
-.tool ul {
+#tool-container p,
+#tool-container ul {
     margin-top: 2rem;
 }
 
-.tool input,
-.tool select, 
-.tool textarea {
+#tool-container input,
+#tool-container select, 
+#tool-container textarea {
     display: block;
     border-radius: var(--field-border-radius);
 }
 
-.tool input, 
-.tool select,
-.tool textarea {
+#tool-container input, 
+#tool-container select,
+#tool-container textarea {
     width: 100%;
     margin-top: 0.25rem;
     background-color: var(--primary-color);
@@ -212,23 +219,23 @@ button:hover {
     border: none;
 }
 
-.tool input:focus,
-.tool select:focus,
-.tool textarea:focus {
+#tool-container input:focus,
+#tool-container select:focus,
+#tool-container textarea:focus {
     outline: none;
 }
 
-.tool input {
+#tool-container input {
     height: 30px;
     padding: 0 12px;
 }
 
-.tool select {
+#tool-container select {
     height: 30px;
     padding: 0 8px;
 }
 
-.tool textarea {
+#tool-container textarea {
     height: 8rem;
     padding: 7px 10px;
     border-radius: var(--block-border-radius);
@@ -261,7 +268,7 @@ button:hover {
     margin-top: 0.5rem;
 }
 
-#note-container {
+/* #note-container {
     display: flex;
     flex-wrap: wrap;
     margin: 12rem 1rem 0 1rem;
@@ -287,7 +294,7 @@ button:hover {
 
 .note .folder-bottom {
     padding: 0.5rem 1.5rem 1.3rem 1.5rem;
-}
+} */
 
 #size-message {
     display: none;
